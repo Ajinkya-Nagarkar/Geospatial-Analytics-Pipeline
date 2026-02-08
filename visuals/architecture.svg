@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="900" height="780" viewBox="0 0 900 780" xmlns="http://www.w3.org/2000/svg" role="img"
+    aria-label="Architecture and data flow diagram">
+    <defs>
+        <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.15" />
+        </filter>
+        <style>
+            .box { fill:#ffffff; stroke:#2b2f33; stroke-width:1.6; rx:10; ry:10;
+            filter:url(#shadow); }
+            .title { font: 600 18px/1 "Segoe UI", Roboto, "Helvetica Neue", Arial; fill:#121417; }
+            .label { font: 500 14px/1 "Segoe UI", Roboto, "Helvetica Neue", Arial; fill:#121417; }
+            .sub { font: 400 12px/1 "Segoe UI", Roboto, "Helvetica Neue", Arial; fill:#5b6166; }
+            .arrow { stroke:#2b2f33; stroke-width:3; fill:none; marker-end:url(#arrowhead); }
+            .small { font: 400 11px/1 "Segoe UI", Roboto, Arial; fill:#5b6166; }
+            .bg { fill:#f6f8fa; }
+        </style>
+
+        <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"
+            markerUnits="strokeWidth">
+            <path d="M0,0 L10,4 L0,8 z" fill="#2b2f33" />
+        </marker>
+    </defs>
+
+    <!-- Background -->
+    <rect class="bg" x="0" y="0" width="900" height="780" rx="0" ry="0" />
+
+    <!-- Title -->
+    <text x="50" y="44" class="title">Architecture &amp; Data Flow</text>
+    <line x1="50" y1="52" x2="850" y2="52" stroke="#e1e4e8" stroke-width="1" />
+
+    <!-- Boxes -->
+    <!-- Box 1 -->
+    <g transform="translate(120,90)">
+        <rect class="box" x="0" y="0" width="660" height="84" />
+        <text x="330" y="30" class="label" text-anchor="middle">PostgreSQL + PostGIS (Neon)</text>
+        <text x="330" y="54" class="sub" text-anchor="middle">Managed spatial database (SRID 4326)</text>
+    </g>
+
+    <!-- Arrow 1 -->
+    <path class="arrow" d="M450 174 L450 214" />
+
+    <!-- Box 2 -->
+    <g transform="translate(120,214)">
+        <rect class="box" x="0" y="0" width="660" height="64" />
+        <text x="330" y="36" class="label" text-anchor="middle">Point Geometry Table</text>
+    </g>
+
+    <!-- Arrow 2 -->
+    <path class="arrow" d="M450 278 L450 318" />
+
+    <!-- Box 3 -->
+    <g transform="translate(120,318)">
+        <rect class="box" x="0" y="0" width="660" height="96" />
+        <text x="330" y="32" class="label" text-anchor="middle">Spatial Analysis Queries</text>
+        <text x="330" y="56" class="sub" text-anchor="middle">(Convex Hull · Nearest Neighbors)</text>
+        <text x="330" y="76" class="small" text-anchor="middle">Uses PostGIS functions (ST_Collect,
+            ST_ConvexHull, KNN &lt;-&gt;)</text>
+    </g>
+
+    <!-- Arrow 3 -->
+    <path class="arrow" d="M450 414 L450 454" />
+
+    <!-- Box 4 -->
+    <g transform="translate(120,454)">
+        <rect class="box" x="0" y="0" width="660" height="74" />
+        <text x="330" y="36" class="label" text-anchor="middle">Derived Geometries</text>
+        <text x="330" y="56" class="sub" text-anchor="middle">(Polygon – Convex Hull · LineStrings –
+            NN connections)</text>
+    </g>
+
+    <!-- Arrow 4 -->
+    <path class="arrow" d="M450 528 L450 568" />
+
+    <!-- Box 5 -->
+    <g transform="translate(120,568)">
+        <rect class="box" x="0" y="0" width="660" height="64" />
+        <text x="330" y="36" class="label" text-anchor="middle">KML Export</text>
+    </g>
+
+    <!-- Arrow 5 -->
+    <path class="arrow" d="M450 632 L450 672" />
+
+    <!-- Visualization three columns -->
+    <g transform="translate(60,672)">
+        <!-- Container box -->
+        <rect x="0" y="0" width="780" height="86" rx="8" ry="8" fill="#ffffff" stroke="#dfe3e6"
+            stroke-width="1.2" />
+        <text x="20" y="24" class="label">Visualization Platforms</text>
+
+        <!-- Google Earth -->
+        <g transform="translate(40,36)">
+            <rect x="0" y="0" width="210" height="36" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" />
+            <text x="105" y="22" class="small" text-anchor="middle">Google Earth</text>
+        </g>
+
+        <!-- ArcGIS -->
+        <g transform="translate(290,36)">
+            <rect x="0" y="0" width="210" height="36" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" />
+            <text x="105" y="22" class="small" text-anchor="middle">ArcGIS Online</text>
+        </g>
+
+        <!-- OpenLayers -->
+        <g transform="translate(540,36)">
+            <rect x="0" y="0" width="210" height="36" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" />
+            <text x="105" y="22" class="small" text-anchor="middle">OpenLayers</text>
+        </g>
+    </g>
+</svg>
