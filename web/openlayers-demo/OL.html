@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HW3 - OpenLayers (Aesthetic)</title>
+  
+  <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
+  <script src="https://openlayers.org/en/v4.6.5/build/ol.js" type="text/javascript"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* Full-screen, modern layout */
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', Arial, sans-serif;
+      overflow: hidden;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* Header Style */
+    .header {
+      padding: 10px 20px;
+      background: #ffffff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-weight: 600;
+      color: #333;
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    /* Map fills remaining space */
+    #map {
+      flex-grow: 1; /* This makes the map fill the space */
+      width: 100%;
+      background-color: #eee;
+    }
+
+    /* --- POPUP STYLES --- */
+    .ol-popup {
+      position: absolute;
+      background-color: white;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      padding: 10px 15px;
+      border-radius: 8px;
+      border: 1px solid #cccccc;
+      bottom: 12px;
+      left: -50px;
+      min-width: 150px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      text-align: center;
+    }
+    .ol-popup:after, .ol-popup:before {
+      top: 100%;
+      border: solid transparent;
+      content: " ";
+      height: 0;
+      width: 0;
+      position: absolute;
+      pointer-events: none;
+    }
+    .ol-popup:after {
+      border-top-color: white;
+      border-width: 10px;
+      left: 48px;
+      margin-left: -10px;
+    }
+    .ol-popup:before {
+      border-top-color: #cccccc;
+      border-width: 11px;
+      left: 48px;
+      margin-left: -11px;
+    }
+    .ol-popup-closer {
+      text-decoration: none;
+      position: absolute;
+      top: 2px;
+      right: 8px;
+      font-size: 1.2rem;
+      color: #777;
+    }
+    .ol-popup-closer:hover {
+      color: #333;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>OpenLayers Map: My 19 Locations</h1>
+    </div>
+  
+    <div id="map" class="map"></div>
+    
+    <div id="popup" class="ol-popup">
+      <a href="#" id="popup-closer" class="ol-popup-closer">✖</a>
+      <div id="popup-content"></div>
+    </div>
+  </div>
+
+
+  <script type="text/javascript">
+
+    // === YOUR 19 POINTS ===
+    const myLocations = [
+      { name: 'Reference Point', coords: [-118.29036297018881, 34.02702181975841] },
+      { name: 'Leavey Library', coords: [-118.28303081842726, 34.02153309333901] },
+      { name: 'Doheny Library', coords: [-118.28415037766956, 34.02037610311187] },
+      { name: 'Hoose Library', coords: [-118.28648403988029, 34.01862473274226] },
+      { name: 'RTCC', coords: [-118.28631152888664, 34.020222664905454] },
+      { name: 'EVK', coords: [-118.28220510101738, 34.02125547141978] },
+      { name: 'Fertitta Cafe', coords: [-118.282298223626, 34.01893001215148] },
+      { name: 'Genaration Fountain', coords: [-118.28324727244882, 34.02219592908872] },
+      { name: 'Doheny Fountatin', coords: [-118.28446687377786, 34.02052962767855] },
+      { name: 'Shumway Fountain', coords: [-118.28526674152653, 34.020222664905454] },
+      { name: 'Fubon Fountain', coords: [-118.28503409869414, 34.02523104748001] },
+      { name: 'Marshall Fountain', coords: [-118.2850333084606, 34.019087507543276] },
+      { name: 'SAL', coords: [-118.28924344811942, 34.01947731108682] },
+      { name: 'SGM', coords: [-118.2890078, 34.0213192] },
+      { name: 'USC Viterbi', coords: [-118.28806356068792, 34.0200484306049] },
+      { name: 'TTH', coords: [-118.28406684402886, 34.02238227716023] },
+      { name: 'USC Law', coords: [-118.28417482327542, 34.01884785174663] },
+      { name: 'USC Architecture', coords: [-118.28771237025748, 34.01928644715761] },
+      { name: 'Marshall', coords: [-118.2855286653286, 34.018599348625884] }
+    ];
+
+    var allFeatures = [];
+
+    myLocations.forEach(function(location) {
+      var feature = new ol.Feature({
+        geometry: new ol.geom.Point(
+          ol.proj.fromLonLat(location.coords)
+        ),
+        name: location.name 
+      });
+      allFeatures.push(feature);
+    });
+
+    var vectorSource = new ol.source.Vector({
+      features: allFeatures
+    });
+
+    // === THIS IS THE UPDATED PART ===
+    // We now use an ol.style.Icon instead of ol.style.Circle
+    var pointStyle = new ol.style.Style({
+      image: new ol.style.Icon({
+        // This 'anchor' is the key part. It tells OpenLayers
+        // to anchor the pin at its bottom-center point.
+        anchor: [0.5, 41],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'pixels',
+        
+        // URL to a classic red map pin icon
+        src: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png'
+      })
+    });
+    // === END OF UPDATED PART ===
+
+    var vectorLayer = new ol.layer.Vector({
+      source: vectorSource,
+      style: pointStyle
+    });
+    
+    // --- POPUP LOGIC ---
+    var popupContainer = document.getElementById('popup');
+    var popupContent = document.getElementById('popup-content');
+    var popupCloser = document.getElementById('popup-closer');
+
+    var overlay = new ol.Overlay({
+      element: popupContainer,
+      autoPan: true,
+      autoPanAnimation: {
+        duration: 250
+      }
+    });
+
+    popupCloser.onclick = function() {
+      overlay.setPosition(undefined);
+      popupCloser.blur();
+      return false;
+    };
+    
+    // --- MAP CREATION ---
+    var map = new ol.Map({
+      target: 'map',
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM()
+        }),
+        vectorLayer
+      ],
+      overlays: [overlay],
+      view: new ol.View({
+        center: ol.proj.fromLonLat([-118.285, 34.022]),
+        zoom: 16
+      })
+    });
+    
+    // --- CLICK EVENT HANDLER (for popups) ---
+    map.on('click', function(evt) {
+      var feature = map.forEachFeatureAtPixel(evt.pixel,
+        function(feature) {
+          return feature;
+        });
+      
+      if (feature) {
+        var coordinates = feature.getGeometry().getCoordinates();
+        var pointName = feature.get('name');
+        
+        popupContent.innerHTML = '<b>' + pointName + '</b>';
+        overlay.setPosition(coordinates);
+      } else {
+        overlay.setPosition(undefined);
+        popupCloser.blur();
+      }
+    });
+
+    // --- NEW: CURSOR CHANGER ON HOVER ---
+    map.on('pointermove', function(evt) {
+      if (evt.dragging) {
+        return;
+      }
+      var pixel = map.getEventPixel(evt.originalEvent);
+      // Check if the pixel hits a feature
+      var hit = map.hasFeatureAtPixel(pixel);
+      // Change the cursor style
+      map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+    });
+
+  </script>
+</body>
+</html>
