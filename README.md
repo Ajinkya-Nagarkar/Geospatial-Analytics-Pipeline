@@ -1,108 +1,144 @@
-# Geospatial Analytics Pipeline
+# Geospatial Analytics Pipeline 🌍
 
-## Project Overview
+![PostGIS](https://img.shields.io/badge/PostGIS-Spatial%20DB-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791)
+![Neon](https://img.shields.io/badge/Neon-Serverless%20Postgres-00E599)
+![OpenLayers](https://img.shields.io/badge/OpenLayers-Web%20Mapping-green)
+![GIS](https://img.shields.io/badge/GIS-Spatial%20Analysis-orange)
 
-This project demonstrates an end-to-end geospatial analytics pipeline built on **PostgreSQL + PostGIS**, combining spatial querying, geometry generation, and multi-platform visualization. The pipeline ingests point-based location data, performs spatial analysis, and exports results for validation and interactive exploration.
-
----
-
-## Architecture & Data Flow
-
-The workflow follows a clear spatial data lifecycle:
-
-1. Point locations are stored as geometry data in PostgreSQL with PostGIS enabled
-2. Spatial queries compute derived geometries (convex hulls and nearest-neighbor connections)
-3. Query results are exported as KML
-4. Outputs are visualized and validated using GIS tools and web-based mapping libraries
+An end-to-end **geospatial analytics pipeline** built with **PostgreSQL + PostGIS**, demonstrating spatial data modeling, analysis, and visualization across multiple platforms.
 
 ---
 
-## Dataset
+## 🧭 Project Overview
 
-The dataset consists of a small set of categorized point locations and a designated reference point.  
-All locations are represented as WGS84 point geometries (`SRID 4326`) and are anonymized for public sharing.
+This project showcases a complete spatial data workflow:
 
----
+- Storing geospatial point data in a spatial database
+- Performing spatial analysis using PostGIS
+- Exporting derived geometries to interoperable formats
+- Visualizing results using desktop GIS tools and web-based maps
 
-## Database & Spatial Setup
-
-Spatial data is managed using **PostgreSQL with the PostGIS extension**, hosted on **Neon**.
-
-The database schema defines:
-
-- A table for storing point geometries
-- Attribute fields for location names and categories
-- A spatial geometry column using geographic coordinates
+The goal is to demonstrate **spatial reasoning**, **database-backed analytics**, and **visual validation** in a clean, reproducible system.
 
 ---
 
-## Spatial Analysis
+![🏗 Architecture & Data Flow](visuals/architecture.svg)
 
-Two core spatial analyses are performed:
+---
+
+## 📍 Dataset
+
+- Small set of categorized point locations
+- One designated reference point
+- Geometry stored as **WGS84 (SRID 4326)** points
+- Data anonymized and generalized for public sharing
+
+---
+
+## 🗄 Database & Spatial Setup
+
+- **Database:** PostgreSQL
+- **Spatial Extension:** PostGIS
+- **Hosting:** Neon (serverless PostgreSQL)
+
+The schema defines:
+
+- A spatial table for point geometries
+- Attribute fields for naming and categorization
+- Geometry column using geographic coordinates
+
+---
+
+## 📐 Spatial Analysis
 
 ### Convex Hull
 
-Computes the minimal polygon enclosing all point locations, representing the overall spatial footprint.
+Generates a polygon representing the minimum bounding geometry enclosing all locations.
+
+📸 _Convex hull visualization:_
+
+![Convex Hull](visuals/convex-hull.png)
+
+---
 
 ### Nearest Neighbors
 
-Identifies the four closest locations to a reference point and generates line geometries connecting them.
+Identifies the **four closest locations** to a reference point and generates connecting line geometries.
 
-These analyses are implemented using standard PostGIS spatial functions and operators.
+📸 _Nearest-neighbor connections:_
+
+![Nearest Neighbors](visuals/nearest-neighbors.png)
 
 ---
 
-## Outputs & Exports
+## 📤 Outputs & Exports
 
-Spatial query outputs are exported in **KML format**, enabling interoperability across GIS tools and mapping platforms.
+Spatial analysis results are exported as **KML**, allowing seamless use across GIS tools.
 
 The consolidated KML includes:
 
-- Original point locations
+- Point locations
 - Convex hull polygon
-- Nearest-neighbor connection lines
+- Nearest-neighbor line strings
+
+📸 _KML viewed in Google Earth:_
+
+![Google Earth](visuals/google-earth.png)
 
 ---
 
-## Visualization
+## 🗺 Visualization
 
-Results are validated and explored across multiple platforms:
+Results are explored and validated using multiple platforms:
 
-- **Google Earth / KML viewers** for geometry inspection
-- **ArcGIS Online** for layer-based visualization and map validation
-- **OpenLayers** for interactive, browser-based mapping
+### ArcGIS Online
 
-Screenshots documenting each visualization step are included in the repository.
+Used for layer-based visualization and validation of spatial outputs.
 
----
+📸 _ArcGIS Online map view:_
 
-## OpenLayers Web Demo
-
-The repository includes a lightweight **OpenLayers** demo that renders the spatial dataset directly in the browser.  
-The demo uses client-side JavaScript and `localStorage` to manage and display spatial features interactively.
+![ArcGIS](visuals/arcgis.png)
 
 ---
 
-## Tools & Technologies
+### OpenLayers Web Demo
 
-- PostgreSQL
-- PostGIS
-- Neon (managed PostgreSQL hosting)
-- KML
-- OpenLayers
-- ArcGIS Online
-- Google Earth
+A lightweight, client-side OpenLayers application renders the dataset directly in the browser.
 
----
+- Pure HTML + JavaScript
+- Uses `localStorage` for feature management
+- No backend required
 
-## Reproducibility Notes
+📸 _OpenLayers interactive map:_
 
-The SQL scripts included in this repository document the full spatial setup and analysis logic.  
-While the hosted database is not publicly exposed, the queries and exported artifacts allow the pipeline to be understood and reproduced in a compatible environment.
+![OpenLayers](visuals/openlayers.png)
 
 ---
 
-## Privacy & Anonymization
+## 🧪 Tools & Technologies
 
-This repository intentionally excludes personal imagery and sensitive location details.  
-All spatial data is generalized and presented solely for demonstrating geospatial analysis workflows.
+- **PostgreSQL**
+- **PostGIS**
+- **Neon (Serverless PostgreSQL)**
+- **KML**
+- **OpenLayers**
+- **ArcGIS Online**
+- **Google Earth**
+
+---
+
+## ♻ Reproducibility Notes
+
+- SQL scripts document schema setup and spatial analysis logic
+- The hosted database is not publicly exposed
+- Visual outputs and screenshots serve as execution proof
+- Pipeline can be reproduced in any PostGIS-enabled environment
+
+---
+
+## 🔒 Privacy & Anonymization
+
+- No personal images or identifying details included
+- Location names generalized
+- Repository is designed for **technical demonstration only**
